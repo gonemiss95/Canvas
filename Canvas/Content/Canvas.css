@@ -8,6 +8,7 @@
     border: 1px solid black;
     border-radius: 5px;
     margin-right: 20px;
+    overflow: auto;
 }
 
 .divTool {
@@ -58,4 +59,15 @@
 .divTabDetailFilter input {
     width: 100%;
     accent-color: #5372f0;
+}
+
+.divTabDetailFilter button {
+    width: calc(100% / 2 - 15px);
+    margin: 5px;
+}
+
+.divTabDetailFilter button img {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
 }

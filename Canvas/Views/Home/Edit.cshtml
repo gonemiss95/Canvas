@@ -39,6 +39,11 @@
                 <label id="lblInversionValue" for="inInversion">0%</label>
             </div>
             <input type="range" id="inInversion" value="0" min="0" max="100" oninput="sliderValueChanged('Inversion')">
+
+            <button type="button" onclick="rotateLeft()"><img title="rotate-left" src="~/Content/CSS/rotate-left.png" />Rotate Left</button>
+            <button type="button" onclick="rotateRight()"><img title="rotate-right" src="~/Content/CSS/rotate-right.png" />Rotate Right</button>
+            <button type="button" onclick="zoomIn()"><img title="zoom-in" src="~/Content/CSS/zoom-in.png" />Zoom In</button>
+            <button type="button" onclick="zoomOut()"><img title="zoom-out" src="~/Content/CSS/zoom-out.png" />Zoom Out</button>
         </div>
 
         <button type="button" onclick="resetFilter()">RESET FILTERS</button>
