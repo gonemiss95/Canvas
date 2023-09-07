@@ -1,1 +1,55 @@
-﻿
+﻿<div class="divEditor">
+    <div class="divImage">
+        <canvas id="canvas" style="border: dotted;"></canvas>
+    </div>
+    <div class="divTool">
+        <div class="divTabTitle">
+            <label id="lblFilter" onclick="filterClick()">Filter</label>
+            <label id="lblEditor" onclick="editorClick()">Editor</label>
+        </div>
+        <div class="divTabDetailFilter">
+            <label class="lblTabDetailTitle">Filters</label>
+
+            <div class="divFilterInfo">
+                <label for="inBrightness">Brighteness</label>
+                <label id="lblBrightnessValue" for="inBrightness">100%</label>
+            </div>
+            <input type="range" id="inBrightness" value="100" min="0" max="200" oninput="sliderValueChanged('Brightness')">
+
+            <div class="divFilterInfo">
+                <label for="inSaturation">Saturation</label>
+                <label id="lblSaturationValue" for="inSaturation">100%</label>
+            </div>
+            <input type="range" id="inSaturation" value="100" min="0" max="200" oninput="sliderValueChanged('Saturation')">
+
+            <div class="divFilterInfo">
+                <label for="inContrast">Contrast</label>
+                <label id="lblContrastValue" for="inContrast">100%</label>
+            </div>
+            <input type="range" id="inContrast" value="100" min="0" max="200" oninput="sliderValueChanged('Contrast')">
+
+            <div class="divFilterInfo">
+                <label for="inGrayscale">Grayscale</label>
+                <label id="lblGrayscaleValue" for="inGrayscale">0%</label>
+            </div>
+            <input type="range" id="inGrayscale" value="0" min="0" max="100" oninput="sliderValueChanged('Grayscale')">
+
+            <div class="divFilterInfo">
+                <label for="inInversion">Inversion</label>
+                <label id="lblInversionValue" for="inInversion">0%</label>
+            </div>
+            <input type="range" id="inInversion" value="0" min="0" max="100" oninput="sliderValueChanged('Inversion')">
+        </div>
+
+        <button type="button" onclick="resetFilter()">RESET FILTERS</button>
+        <button type="button">SAVE</button>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/Content/Canvas.css" />
+
+<script>
+    var GetImageURL = "@Url.Action("GetImage", "Home")";
+</script>
+
+<script src="~/Scripts/Canvas.js"></script>
