@@ -1,5 +1,5 @@
 ﻿let image = new Image();
-let canvas = document.getElementById("canvas");
+let canvas = new fabric.Canvas("canvas");
 let canvasCtx = canvas.getContext("2d");
 
 var inputBrightness = document.getElementById("inBrightness");
@@ -27,6 +27,48 @@ $(document).ready(function () {
     txtBoxText.style.display = "none";
     $("#lblFilter").click();
 });
+
+function resetFilter() {
+    inputBrightness.value = "100";
+    inputSaturation.value = "100";
+    inputContrast.value = "100";
+    inputGrayscale.value = "0";
+    inputInversion.value = "0";
+
+    $("#lblBrightnessValue").text(`${inputBrightness.value}%`);
+    $("#lblSaturationValue").text(`${inputSaturation.value}%`);
+    $("#lblContrastValue").text(`${inputContrast.value}%`);
+    $("#lblGrayscaleValue").text(`${inputGrayscale.value}%`);
+    $("#lblInversionValue").text(`${inputInversion.value}%`);
+
+    rotateDegree = 0;
+    scale = 1;
+
+    $.ajax({
+        type: "POST",
+        url: "/Home/GetImage",
+        success: function (data) {
+            fabric.Image.fromURL(data, function (img) {
+
+                //img.set({
+                //    selectable: false, // Make the image not selectable
+                //    left: tempWidth / 2, // Set the initial left position
+                //    top: tempHeight / 2, // Set the initial top position
+                //    width: tempWidth,
+                //    height: tempHeight,
+                //    originX: "center", // Set the origin to the center
+                //    originY: "center", // Set the origin to the center
+                //});
+
+                canvas.clear();
+                canvas.add(img);
+                canvas.setWidth(img.width);
+                canvas.setHeight(img.height);
+                canvas.renderAll();
+            });
+        }
+    });
+}
 
 
 //Tab functions
@@ -116,6 +158,7 @@ function text() {
     txtBoxText.style.display = "none";
 }
 
+/*
 canvas.addEventListener("mousedown", function (e) {
     startX = 0;
     startY = 0;
@@ -231,38 +274,10 @@ txtBoxText.addEventListener("keypress", function (e) {
         isDrawing = false;
     }
 });
+*/
 
 
 //Other functions
-function resetFilter() {
-    inputBrightness.value = "100";
-    inputSaturation.value = "100";
-    inputContrast.value = "100";
-    inputGrayscale.value = "0";
-    inputInversion.value = "0";
-
-    $("#lblBrightnessValue").text(`${inputBrightness.value}%`);
-    $("#lblSaturationValue").text(`${inputSaturation.value}%`);
-    $("#lblContrastValue").text(`${inputContrast.value}%`);
-    $("#lblGrayscaleValue").text(`${inputGrayscale.value}%`);
-    $("#lblInversionValue").text(`${inputInversion.value}%`);
-
-    rotateDegree = 0;
-    scale = 1;
-
-    $.ajax({
-        type: "POST",
-        url: "/Home/GetImage",
-        success: function (data) {
-            image.src = data;
-
-            image.onload = function () {
-                applyFilter();
-            };
-        }
-    });
-}
-
 function applyFilter() {
     //Canvas width & height have to set before filter 
     if (rotateDegree === 90 || rotateDegree === -90 || rotateDegree === 270 || rotateDegree === -270) {
