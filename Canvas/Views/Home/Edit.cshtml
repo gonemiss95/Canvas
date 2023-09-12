@@ -47,8 +47,12 @@
 
         <div class="divTabDetail" id="tabDtlEditor">
             <label class="lblTabDetailTitle">Editors</label>
+
             <button type="button" onclick="crop()"><img title="crop" src="~/Content/CSS/crop.png" />Crop</button>
+
             <button type="button" onclick="eraser()"><img title="eraser" src="~/Content/CSS/eraser.png" />Eraser</button>
+            <input type="number" id="eraserSize" min="1" max="50" value="10" oninput="eraserSizeChanged(this)">
+
             <button type="button" onclick="text()"><img title="text" src="~/Content/CSS/text.png" />Text</button>
             <input type="color" id="textColor" title="textColor" value="#e66465">
         </div>

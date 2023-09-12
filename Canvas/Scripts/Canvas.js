@@ -7,6 +7,7 @@ let canvasHeight = 0;
 let rotateDegree = 0;
 
 let isCropClick = false;
+let isEraserClick = false;
 
 let startX = 0;
 let startY = 0;
@@ -174,6 +175,7 @@ function zoom(zoomKey) {
 //Editor functions
 function crop() {
     isCropClick = true;
+    isEraserClick = false;
 
     canvas.isDrawingMode = false;
     canvas.discardActiveObject();
@@ -186,15 +188,30 @@ function crop() {
 
 function eraser() {
     isCropClick = false;
+    isEraserClick = true;
 
     canvas.isDrawingMode = true; //Enable drawing mode
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas); //Use PencilBrush for drawing
     canvas.freeDrawingBrush.color = "white";
-    canvas.freeDrawingBrush.width = 10;
+    canvas.freeDrawingBrush.width = parseInt($("#eraserSize").val());
+}
+
+function eraserSizeChanged(size) {
+    if ($(size).val() < 1) {
+        $(size).val(1);
+    }
+    else if ($(size).val() > 50) {
+        $(size).val(50);
+    }
+
+    if (isEraserClick === true) {
+        canvas.freeDrawingBrush.width = parseInt($(size).val());
+    }
 }
 
 function text() {
     isCropClick = false;
+    isEraserClick = false;
 
     let textBox = new fabric.Textbox("Enter Text", {
         fontSize: 16,
