@@ -65,21 +65,22 @@ function resetFilter() {
 }
 
 
-//Tab functions
-function filterClick() {
-    $("#tabDtlFilter").css("display", "block");
-    $("#tabDtlEditor").css("display", "none");
+//Tab function
+function tabClicked(tabKey) {
+    if (tabKey === "Filter") {
+        $("#tabDtlFilter").css("display", "block");
+        $("#tabDtlEditor").css("display", "none");
 
-    $("#lblFilter").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
-    $("#lblEditor").css({ "font-size": "16px", "text-decoration": "none" });
-}
+        $("#lblFilter").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
+        $("#lblEditor").css({ "font-size": "16px", "text-decoration": "none" });
+    }
+    else if (tabKey === "Editor") {
+        $("#tabDtlFilter").css("display", "none");
+        $("#tabDtlEditor").css("display", "inline-grid");
 
-function editorClick() {
-    $("#tabDtlFilter").css("display", "none");
-    $("#tabDtlEditor").css("display", "inline-grid");
-
-    $("#lblFilter").css({ "font-size": "16px", "text-decoration": "none" });
-    $("#lblEditor").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
+        $("#lblFilter").css({ "font-size": "16px", "text-decoration": "none" });
+        $("#lblEditor").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
+    }
 }
 
 
