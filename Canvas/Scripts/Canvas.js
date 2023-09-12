@@ -1,6 +1,6 @@
-﻿let image = new Image();
-let canvas = new fabric.Canvas("canvas");
+﻿let canvas = new fabric.Canvas("canvas");
 let canvasCtx = canvas.getContext("2d");
+let image = null;
 
 let rotateDegree = 0;
 let scale = 1;
@@ -36,14 +36,13 @@ function resetFilter() {
     $("#chkBoxInversion").prop("checked", false);
 
     rotateDegree = 0;
-    scale = 1;
+    canvas.setZoom(1);
 
     $.ajax({
         type: "POST",
         url: "/Home/GetImage",
         success: function (data) {
             fabric.Image.fromURL(data, function (img) {
-
                 //img.set({
                 //    selectable: false, // Make the image not selectable
                 //    left: tempWidth / 2, // Set the initial left position
@@ -59,6 +58,8 @@ function resetFilter() {
                 canvas.setWidth(img.width);
                 canvas.setHeight(img.height);
                 canvas.renderAll();
+
+                image = img;
             });
         }
     });
@@ -86,40 +87,38 @@ function tabClicked(tabKey) {
 
 //Filter functions
 function filterValueChanged(filterKey) {
-    let img = canvas.item(0);
     const filter = window[`slider${filterKey}`];
     const filterValue = (filter.value / 100) - 1;
     $(`#lbl${filterKey}Value`).text(`${filter.value}%`);
 
     if (filterKey === "Brightness") {
-        img.filters[0] = new fabric.Image.filters.Brightness({ brightness: filterValue });
+        image.filters[0] = new fabric.Image.filters.Brightness({ brightness: filterValue });
     }
     else if (filterKey === "Saturation") {
-        img.filters[1] = new fabric.Image.filters.Saturation({ saturation: filterValue });
+        image.filters[1] = new fabric.Image.filters.Saturation({ saturation: filterValue });
     }
     else if (filterKey === "Contrast") {
-        img.filters[2] = new fabric.Image.filters.Contrast({ contrast: filterValue });
+        image.filters[2] = new fabric.Image.filters.Contrast({ contrast: filterValue });
     }
 
-    img.applyFilters();
+    image.applyFilters();
     canvas.renderAll();
 }
 
 function filterCheckChanged() {
-    let img = canvas.item(0);
     const isGrayscaleChecked = $("#chkBoxGrayscale").is(":checked");
     const isInversionChecked = $("#chkBoxInversion").is(":checked");
-    img.filters[3] = null;
-    img.filters[4] = null;
+    image.filters[3] = null;
+    image.filters[4] = null;
 
     if (isGrayscaleChecked === true) {
-        img.filters[3] = new fabric.Image.filters.Grayscale();
+        image.filters[3] = new fabric.Image.filters.Grayscale();
     }
     if (isInversionChecked === true) {
-        img.filters[4] = new fabric.Image.filters.Invert();
+        image.filters[4] = new fabric.Image.filters.Invert();
     }
 
-    img.applyFilters();
+    image.applyFilters();
     canvas.renderAll();
 }
 
@@ -143,20 +142,17 @@ function rotateRight() {
     applyFilter();
 }
 
-function zoomIn() {
-    if (scale < 2.0) {
-        scale += 0.1;
+function zoom(zoomKey) {
+    if (zoomKey === "In") {
+        canvas.setZoom(canvas.getZoom() + 0.1);
+    }
+    else if (zoomKey === "Out") {
+        canvas.setZoom(canvas.getZoom() - 0.1);
     }
 
-    applyFilter();
-}
-
-function zoomOut() {
-    if (scale > 0.1) {
-        scale -= 0.1;
-    }
-
-    applyFilter();
+    canvas.setWidth(canvas.getZoom() * image.width);
+    canvas.setHeight(canvas.getZoom() * image.height);
+    canvas.renderAll();
 }
 
 
