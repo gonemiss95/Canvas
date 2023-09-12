@@ -76,6 +76,19 @@ function tabClicked(tabKey) {
     }
 }
 
+function saveImage() {
+    let imgDataURL = canvas.toDataURL({
+        format: "jpeg",
+        quality: 0.8
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "/Home/SaveImage",
+        data: { imgDataURL: imgDataURL }
+    });
+}
+
 
 //Filter functions
 function filterValueChanged(filterKey) {
