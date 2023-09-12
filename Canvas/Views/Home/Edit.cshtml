@@ -12,35 +12,33 @@
         <div class="divTabDetail" id="tabDtlFilter">
             <label class="lblTabDetailTitle">Filters</label>
 
-            <div class="divFilterInfo">
-                <label for="inBrightness">Brighteness</label>
-                <label id="lblBrightnessValue" for="inBrightness">100%</label>
+            <div class="divFilterInfoSlider">
+                <label for="sliderBrightness">Brighteness</label>
+                <label id="lblBrightnessValue" for="sliderBrightness">100%</label>
             </div>
-            <input type="range" id="inBrightness" value="100" min="0" max="200" oninput="sliderValueChanged('Brightness')">
+            <input type="range" id="sliderBrightness" value="100" min="0" max="200" oninput="filterValueChanged('Brightness')">
 
-            <div class="divFilterInfo">
-                <label for="inSaturation">Saturation</label>
-                <label id="lblSaturationValue" for="inSaturation">100%</label>
+            <div class="divFilterInfoSlider">
+                <label for="sliderSaturation">Saturation</label>
+                <label id="lblSaturationValue" for="sliderSaturation">100%</label>
             </div>
-            <input type="range" id="inSaturation" value="100" min="0" max="200" oninput="sliderValueChanged('Saturation')">
+            <input type="range" id="sliderSaturation" value="100" min="0" max="200" oninput="filterValueChanged('Saturation')">
 
-            <div class="divFilterInfo">
-                <label for="inContrast">Contrast</label>
-                <label id="lblContrastValue" for="inContrast">100%</label>
+            <div class="divFilterInfoSlider">
+                <label for="sliderContrast">Contrast</label>
+                <label id="lblContrastValue" for="sliderContrast">100%</label>
             </div>
-            <input type="range" id="inContrast" value="100" min="0" max="200" oninput="sliderValueChanged('Contrast')">
+            <input type="range" id="sliderContrast" value="100" min="0" max="200" oninput="filterValueChanged('Contrast')">
 
-            <div class="divFilterInfo">
-                <label for="inGrayscale">Grayscale</label>
-                <label id="lblGrayscaleValue" for="inGrayscale">0%</label>
+            <div class="divFilterInfoCheckBox">
+                <input type="checkbox" id="chkBoxGrayscale" onchange="filterCheckChanged()">
+                <label for="chkBoxGrayscale">Grayscale</label>
             </div>
-            <input type="range" id="inGrayscale" value="0" min="0" max="100" oninput="sliderValueChanged('Grayscale')">
 
-            <div class="divFilterInfo">
-                <label for="inInversion">Inversion</label>
-                <label id="lblInversionValue" for="inInversion">0%</label>
+            <div class="divFilterInfoCheckBox">
+                <input type="checkbox" id="chkBoxInversion" onchange="filterCheckChanged()">
+                <label for="chkBoxInversion">Inversion</label>
             </div>
-            <input type="range" id="inInversion" value="0" min="0" max="100" oninput="sliderValueChanged('Inversion')">
 
             <button type="button" onclick="rotateLeft()"><img title="rotate-left" src="~/Content/CSS/rotate-left.png" />Rotate Left</button>
             <button type="button" onclick="rotateRight()"><img title="rotate-right" src="~/Content/CSS/rotate-right.png" />Rotate Right</button>

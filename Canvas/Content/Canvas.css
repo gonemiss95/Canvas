@@ -57,9 +57,18 @@
     padding-bottom: 15px;
 }
 
-.divFilterInfo {
+.divFilterInfoSlider {
     display: flex;
     justify-content: space-between;
+}
+
+.divFilterInfoCheckBox {
+    display: flex;
+    width: 10%;
+}
+
+.divFilterInfoCheckBox input {
+    margin: 5px;
 }
 
 #tabDtlFilter input {

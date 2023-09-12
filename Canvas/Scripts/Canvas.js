@@ -2,12 +2,6 @@
 let canvas = new fabric.Canvas("canvas");
 let canvasCtx = canvas.getContext("2d");
 
-var inputBrightness = document.getElementById("inBrightness");
-var inputSaturation = document.getElementById("inSaturation");
-var inputContrast = document.getElementById("inContrast");
-var inputGrayscale = document.getElementById("inGrayscale");
-var inputInversion = document.getElementById("inInversion");
-
 let rotateDegree = 0;
 let scale = 1;
 
@@ -29,17 +23,17 @@ $(document).ready(function () {
 });
 
 function resetFilter() {
-    inputBrightness.value = "100";
-    inputSaturation.value = "100";
-    inputContrast.value = "100";
-    inputGrayscale.value = "0";
-    inputInversion.value = "0";
+    $("#sliderBrightness").val(100);
+    $("#lblBrightnessValue").text("100%");
 
-    $("#lblBrightnessValue").text(`${inputBrightness.value}%`);
-    $("#lblSaturationValue").text(`${inputSaturation.value}%`);
-    $("#lblContrastValue").text(`${inputContrast.value}%`);
-    $("#lblGrayscaleValue").text(`${inputGrayscale.value}%`);
-    $("#lblInversionValue").text(`${inputInversion.value}%`);
+    $("#sliderSaturation").val(100);
+    $("#lblSaturationValue").text("100%");
+
+    $("#sliderContrast").val(100);
+    $("#lblContrastValue").text("100%");
+
+    $("#chkBoxGrayscale").prop("checked", false);
+    $("#chkBoxInversion").prop("checked", false);
 
     rotateDegree = 0;
     scale = 1;
@@ -90,10 +84,42 @@ function editorClick() {
 
 
 //Filter functions
-function sliderValueChanged(filterKey) {
-    const filter = window[`input${filterKey}`];
+function filterValueChanged(filterKey) {
+    let img = canvas.item(0);
+    const filter = window[`slider${filterKey}`];
+    const filterValue = (filter.value / 100) - 1;
     $(`#lbl${filterKey}Value`).text(`${filter.value}%`);
-    applyFilter();
+
+    if (filterKey === "Brightness") {
+        img.filters[0] = new fabric.Image.filters.Brightness({ brightness: filterValue });
+    }
+    else if (filterKey === "Saturation") {
+        img.filters[1] = new fabric.Image.filters.Saturation({ saturation: filterValue });
+    }
+    else if (filterKey === "Contrast") {
+        img.filters[2] = new fabric.Image.filters.Contrast({ contrast: filterValue });
+    }
+
+    img.applyFilters();
+    canvas.renderAll();
+}
+
+function filterCheckChanged() {
+    let img = canvas.item(0);
+    const isGrayscaleChecked = $("#chkBoxGrayscale").is(":checked");
+    const isInversionChecked = $("#chkBoxInversion").is(":checked");
+    img.filters[3] = null;
+    img.filters[4] = null;
+
+    if (isGrayscaleChecked === true) {
+        img.filters[3] = new fabric.Image.filters.Grayscale();
+    }
+    if (isInversionChecked === true) {
+        img.filters[4] = new fabric.Image.filters.Invert();
+    }
+
+    img.applyFilters();
+    canvas.renderAll();
 }
 
 function rotateLeft() {
