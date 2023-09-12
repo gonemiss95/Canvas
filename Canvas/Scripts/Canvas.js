@@ -1,27 +1,18 @@
 ﻿let canvas = new fabric.Canvas("canvas");
-let canvasCtx = canvas.getContext("2d");
 let image = null;
 
 let canvasWidth = 0;
 let canvasHeight = 0;
 
 let rotateDegree = 0;
-let scale = 1;
 
 let isCropClick = false;
-let isEraserClick = false;
-let isTextClick = false;
-let isDrawing = false;
 
 let startX = 0;
 let startY = 0;
-let cropWidth = 0;
-let cropHeight = 0;
-let txtBoxText = document.getElementById("txtBoxText");
 
 $(document).ready(function () {
     resetFilter();
-    txtBoxText.style.display = "none";
     $("#lblFilter").click();
 });
 
@@ -47,7 +38,7 @@ function resetFilter() {
         success: function (data) {
             fabric.Image.fromURL(data, function (img) {
                 img.set({
-                    //selectable: false, //Make the image not selectable
+                    selectable: false, //Make the image not selectable
                     left: img.width / 2, //Set the initial left position
                     top: img.height / 2, //Set the initial top position
                     originX: "center", //Set the origin X to the center
@@ -68,8 +59,6 @@ function resetFilter() {
     });
 }
 
-
-//Tab function
 function tabClicked(tabKey) {
     if (tabKey === "Filter") {
         $("#tabDtlFilter").css("display", "block");
@@ -172,175 +161,102 @@ function zoom(zoomKey) {
 //Editor functions
 function crop() {
     isCropClick = true;
-    isEraserClick = false;
-    isTextClick = false;
-    isDrawing = false;
-    txtBoxText.style.display = "none";
+
+    canvas.isDrawingMode = false;
+    canvas.discardActiveObject();
+    canvas.renderAll();
+
+    canvas.forEachObject(function (object) {
+        object.selectable = false;
+    });
 }
 
 function eraser() {
     isCropClick = false;
-    isEraserClick = true;
-    isTextClick = false;
-    isDrawing = false;
-    txtBoxText.style.display = "none";
+
+    canvas.isDrawingMode = true; //Enable drawing mode
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas); //Use PencilBrush for drawing
+    canvas.freeDrawingBrush.color = "white";
+    canvas.freeDrawingBrush.width = 10;
 }
 
 function text() {
     isCropClick = false;
-    isEraserClick = false;
-    isTextClick = true;
-    isDrawing = false;
-    txtBoxText.style.display = "none";
+
+    let textBox = new fabric.Textbox("Enter Text", {
+        fontSize: 16,
+        fontFamily: "Arial",
+        textAlign: "left",
+        width: 80,
+        top: 20,
+        left: 20,
+        fill: $("#textColor").val()
+    });
+
+    canvas.isDrawingMode = false;
+    canvas.add(textBox);
+    canvas.renderAll();
 }
 
-/*
-canvas.addEventListener("mousedown", function (e) {
-    startX = 0;
-    startY = 0;
-    cropWidth = 0;
-    cropHeight = 0;
-    txtBoxText.style.display = "none";
-
-    if (isCropClick === false && isEraserClick === false && isTextClick === false) {
-        return;
-    }
-
-    if (isTextClick === true) {
-        txtBoxText.style.display = "block";
-        txtBoxText.style.position = "absolute";
-        txtBoxText.style.top = `${e.y}px`;
-        txtBoxText.style.left = `${e.x}px`;
-        txtBoxText.value = "";
-    }
-
-    startX = e.offsetX;
-    startY = e.offsetY;
-    isDrawing = true;
+canvas.on("mouse:down", (e) => {
+    const pointer = canvas.getPointer(e.e);
+    startX = pointer.x;
+    startY = pointer.y;
 });
 
-canvas.addEventListener("mousemove", function (e) {
-    if (isDrawing === false) {
-        return;
-    }
-
+canvas.on("mouse:up", (e) => {
     if (isCropClick === true) {
-        cropWidth = e.offsetX - startX;
-        cropHeight = e.offsetY - startY;
+        const pointer = canvas.getPointer(e.e);
+        canvasWidth = Math.abs(pointer.x - startX) * canvas.getZoom();
+        canvasHeight = Math.abs(pointer.y - startY) * canvas.getZoom();
 
-        canvasCtx.clearRect(startX, startY, cropWidth, cropHeight);
-        applyFilter();
+        if (startX > pointer.x) {
+            startX = pointer.x * canvas.getZoom();
+        }
+        if (startY > pointer.y) {
+            startY = pointer.y * canvas.getZoom();
+        }
 
-        canvasCtx.strokeStyle = '#FF0000';
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeRect(startX, startY, cropWidth, cropHeight);
-    }
-    else if (isEraserClick === true) {
-        canvasCtx.strokeStyle = "white";
-        canvasCtx.lineWidth = 15;
-        canvasCtx.lineCap = "round";
-        canvasCtx.beginPath();
-        canvasCtx.moveTo(startX, startY);
-        canvasCtx.lineTo(e.offsetX, e.offsetY);
-        canvasCtx.stroke();
-        canvasCtx.closePath();
+        $("#sliderBrightness").val(100);
+        $("#lblBrightnessValue").text("100%");
+        filterValueChanged("Brightness");
 
-        startX = e.offsetX;
-        startY = e.offsetY;
-    }
-});
+        $("#sliderSaturation").val(100);
+        $("#lblSaturationValue").text("100%");
+        filterValueChanged("Saturation");
 
-canvas.addEventListener("mouseup", function (e) {
-    if (isDrawing === false) {
-        return;
-    }
-    
-    if (isCropClick === true) {
-        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        applyFilter();
+        $("#sliderContrast").val(100);
+        $("#lblContrastValue").text("100%");
+        filterValueChanged("Contrast");
 
-        //let cropStartX = startX;
-        //let cropStartY = startY;
+        $("#chkBoxGrayscale").prop("checked", false);
+        $("#chkBoxInversion").prop("checked", false);
+        filterCheckChanged();
 
-        //if (cropStartX > e.offsetX) {
-        //    cropStartX = e.offsetX
-        //}
-        //if (cropStartY > e.offsetY) {
-        //    cropStartY = e.offsetY
-        //}
+        rotateDegree = 0;
 
-        //cropWidth = Math.abs(cropWidth);
-        //cropHeight = Math.abs(cropHeight);
+        let cropImg = new Image();
+        cropImg.src = canvas.toDataURL({
+            left: startX * canvas.getZoom(),
+            top: startY * canvas.getZoom(),
+            width: canvasWidth,
+            height: canvasHeight
+        });
 
-        const hiddenCanvas = document.getElementById("hiddenCanvas");
-        const hiddenCanvasCtx = hiddenCanvas.getContext("2d");
-        hiddenCanvas.width = Math.abs(cropWidth);
-        hiddenCanvas.height = Math.abs(cropHeight);
-        hiddenCanvasCtx.drawImage(canvas, startX, startY, cropWidth, cropHeight, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+        cropImg.onload = function () {
+            image = new fabric.Image(cropImg);
+            image.selectable = false;
+            image.left = canvasWidth / 2;
+            image.top = canvasHeight / 2;
+            image.originX = "center";
+            image.originY = "center";
 
-        inputBrightness.value = "100";
-        inputSaturation.value = "100";
-        inputContrast.value = "100";
-        inputGrayscale.value = "0";
-        inputInversion.value = "0";
-
-        canvas.width = Math.abs(cropWidth);
-        canvas.height = Math.abs(cropHeight);
-        //canvasCtx.drawImage(hiddenCanvas, 0, 0);
-        canvasCtx.drawImage(image, startX, startY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
-        //image.onload = null;
-        //image.src = canvas.toDataURL();
-    }
-
-    isDrawing = false;
-});
-
-txtBoxText.addEventListener("mouseenter", function (e) {
-    txtBoxText.focus();
-});
-
-txtBoxText.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        canvasCtx.font = "30px Arial";
-        canvasCtx.texBaseline = "middle";
-        canvasCtx.fillStyle = "red";
-        canvasCtx.fillText(txtBoxText.value, startX, startY);
-        txtBoxText.style.display = "none";
-        isDrawing = false;
+            canvas.clear();
+            canvas.add(image);
+            canvas.setWidth(canvasWidth);
+            canvas.setHeight(canvasHeight);
+            canvas.setZoom(1);
+            canvas.renderAll();
+        };
     }
 });
-*/
-
-
-//Other functions
-function applyFilter() {
-    //Canvas width & height have to set before filter 
-    if (rotateDegree === 90 || rotateDegree === -90 || rotateDegree === 270 || rotateDegree === -270) {
-        canvas.width = image.height * scale;
-        canvas.height = image.width * scale;
-    }
-    else {
-        canvas.width = image.width * scale;
-        canvas.height = image.height * scale;
-    }
-
-    canvasCtx.filter = `brightness(${inputBrightness.value}%) saturate(${inputSaturation.value}%) contrast(${inputContrast.value}%) grayscale(${inputGrayscale.value}%) invert(${inputInversion.value}%)`;
-    canvasCtx.rotate(rotateDegree * Math.PI / 180);
-    canvasCtx.scale(scale, scale);
-
-    if (rotateDegree === 90 || rotateDegree === -270) {
-        canvasCtx.drawImage(image, 0, -image.height);
-    }
-    else if (rotateDegree === -90 || rotateDegree === 270) {
-        canvasCtx.drawImage(image, -image.width, 0);
-    }
-    else if (rotateDegree === 180 || rotateDegree === -180) {
-        canvasCtx.drawImage(image, -image.width, -image.height);
-    }
-    else {
-        canvasCtx.drawImage(image, 0, 0);
-    }
-
-    canvasCtx.setTransform(1, 0, 0, 1, 0, 0);
-}
