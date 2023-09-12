@@ -1,13 +1,15 @@
 ﻿<div class="divEditor">
     <div class="divImage">
         <canvas id="canvas" style="border: dotted;"></canvas>
+        <input type="text" id="txtBoxText" title="txtBoxText">
     </div>
     <div class="divTool">
         <div class="divTabTitle">
             <label id="lblFilter" onclick="filterClick()">Filter</label>
             <label id="lblEditor" onclick="editorClick()">Editor</label>
         </div>
-        <div class="divTabDetailFilter">
+
+        <div class="divTabDetail" id="tabDtlFilter">
             <label class="lblTabDetailTitle">Filters</label>
 
             <div class="divFilterInfo">
@@ -46,15 +48,18 @@
             <button type="button" onclick="zoomOut()"><img title="zoom-out" src="~/Content/CSS/zoom-out.png" />Zoom Out</button>
         </div>
 
+        <div class="divTabDetail" id="tabDtlEditor">
+            <label class="lblTabDetailTitle">Editors</label>
+            <button type="button" onclick="crop()"><img title="crop" src="~/Content/CSS/crop.png" />Crop</button>
+            <button type="button" onclick="eraser()"><img title="eraser" src="~/Content/CSS/eraser.png" />Eraser</button>
+            <button type="button" onclick="text()"><img title="text" src="~/Content/CSS/text.png" />Text</button>
+        </div>
+
         <button type="button" onclick="resetFilter()">RESET FILTERS</button>
         <button type="button">SAVE</button>
     </div>
 </div>
+<canvas id="hiddenCanvas" style="border: solid;"></canvas>
 
 <link rel="stylesheet" href="~/Content/Canvas.css" />
-
-<script>
-    var GetImageURL = "@Url.Action("GetImage", "Home")";
-</script>
-
 <script src="~/Scripts/Canvas.js"></script>

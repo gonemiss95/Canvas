@@ -11,41 +11,39 @@ var inputInversion = document.getElementById("inInversion");
 let rotateDegree = 0;
 let scale = 1;
 
+let isCropClick = false;
+let isEraserClick = false;
+let isTextClick = false;
+let isDrawing = false;
+
+let startX = 0;
+let startY = 0;
+let cropWidth = 0;
+let cropHeight = 0;
+let txtBoxText = document.getElementById("txtBoxText");
 
 $(document).ready(function () {
-    getImage();
+    resetFilter();
+    txtBoxText.style.display = "none";
     $("#lblFilter").click();
 });
-
-function getImage() {
-    $.ajax({
-        cache: false,
-        type: "POST",
-        url: GetImageURL,
-        success: function (data) {
-            image.src = data;
-
-            image.addEventListener("load", function () {
-                resetFilter();
-            });
-        }
-    });
-}
 
 
 //Tab functions
 function filterClick() {
-    $('.divTabDetailFilter').css("display", "block");
+    $("#tabDtlFilter").css("display", "block");
+    $("#tabDtlEditor").css("display", "none");
 
-    $('#lblFilter').css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
-    $('#lblEditor').css({ "font-size": "16px", "text-decoration": "none" });
+    $("#lblFilter").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
+    $("#lblEditor").css({ "font-size": "16px", "text-decoration": "none" });
 }
 
 function editorClick() {
-    $('.divTabDetailFilter').css("display", "none");
+    $("#tabDtlFilter").css("display", "none");
+    $("#tabDtlEditor").css("display", "inline-grid");
 
-    $('#lblFilter').css({ "font-size": "16px", "text-decoration": "none" });
-    $('#lblEditor').css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
+    $("#lblFilter").css({ "font-size": "16px", "text-decoration": "none" });
+    $("#lblEditor").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
 }
 
 
@@ -92,6 +90,150 @@ function zoomOut() {
     applyFilter();
 }
 
+
+//Editor functions
+function crop() {
+    isCropClick = true;
+    isEraserClick = false;
+    isTextClick = false;
+    isDrawing = false;
+    txtBoxText.style.display = "none";
+}
+
+function eraser() {
+    isCropClick = false;
+    isEraserClick = true;
+    isTextClick = false;
+    isDrawing = false;
+    txtBoxText.style.display = "none";
+}
+
+function text() {
+    isCropClick = false;
+    isEraserClick = false;
+    isTextClick = true;
+    isDrawing = false;
+    txtBoxText.style.display = "none";
+}
+
+canvas.addEventListener("mousedown", function (e) {
+    startX = 0;
+    startY = 0;
+    cropWidth = 0;
+    cropHeight = 0;
+    txtBoxText.style.display = "none";
+
+    if (isCropClick === false && isEraserClick === false && isTextClick === false) {
+        return;
+    }
+
+    if (isTextClick === true) {
+        txtBoxText.style.display = "block";
+        txtBoxText.style.position = "absolute";
+        txtBoxText.style.top = `${e.y}px`;
+        txtBoxText.style.left = `${e.x}px`;
+        txtBoxText.value = "";
+    }
+
+    startX = e.offsetX;
+    startY = e.offsetY;
+    isDrawing = true;
+});
+
+canvas.addEventListener("mousemove", function (e) {
+    if (isDrawing === false) {
+        return;
+    }
+
+    if (isCropClick === true) {
+        cropWidth = e.offsetX - startX;
+        cropHeight = e.offsetY - startY;
+
+        canvasCtx.clearRect(startX, startY, cropWidth, cropHeight);
+        applyFilter();
+
+        canvasCtx.strokeStyle = '#FF0000';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeRect(startX, startY, cropWidth, cropHeight);
+    }
+    else if (isEraserClick === true) {
+        canvasCtx.strokeStyle = "white";
+        canvasCtx.lineWidth = 15;
+        canvasCtx.lineCap = "round";
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(startX, startY);
+        canvasCtx.lineTo(e.offsetX, e.offsetY);
+        canvasCtx.stroke();
+        canvasCtx.closePath();
+
+        startX = e.offsetX;
+        startY = e.offsetY;
+    }
+});
+
+canvas.addEventListener("mouseup", function (e) {
+    if (isDrawing === false) {
+        return;
+    }
+    
+    if (isCropClick === true) {
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        applyFilter();
+
+        //let cropStartX = startX;
+        //let cropStartY = startY;
+
+        //if (cropStartX > e.offsetX) {
+        //    cropStartX = e.offsetX
+        //}
+        //if (cropStartY > e.offsetY) {
+        //    cropStartY = e.offsetY
+        //}
+
+        //cropWidth = Math.abs(cropWidth);
+        //cropHeight = Math.abs(cropHeight);
+
+        const hiddenCanvas = document.getElementById("hiddenCanvas");
+        const hiddenCanvasCtx = hiddenCanvas.getContext("2d");
+        hiddenCanvas.width = Math.abs(cropWidth);
+        hiddenCanvas.height = Math.abs(cropHeight);
+        hiddenCanvasCtx.drawImage(canvas, startX, startY, cropWidth, cropHeight, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+
+        inputBrightness.value = "100";
+        inputSaturation.value = "100";
+        inputContrast.value = "100";
+        inputGrayscale.value = "0";
+        inputInversion.value = "0";
+
+        canvas.width = Math.abs(cropWidth);
+        canvas.height = Math.abs(cropHeight);
+        //canvasCtx.drawImage(hiddenCanvas, 0, 0);
+        canvasCtx.drawImage(image, startX, startY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+        //image.onload = null;
+        //image.src = canvas.toDataURL();
+    }
+
+    isDrawing = false;
+});
+
+txtBoxText.addEventListener("mouseenter", function (e) {
+    txtBoxText.focus();
+});
+
+txtBoxText.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        canvasCtx.font = "30px Arial";
+        canvasCtx.texBaseline = "middle";
+        canvasCtx.fillStyle = "red";
+        canvasCtx.fillText(txtBoxText.value, startX, startY);
+        txtBoxText.style.display = "none";
+        isDrawing = false;
+    }
+});
+
+
+//Other functions
 function resetFilter() {
     inputBrightness.value = "100";
     inputSaturation.value = "100";
@@ -108,7 +250,17 @@ function resetFilter() {
     rotateDegree = 0;
     scale = 1;
 
-    applyFilter();
+    $.ajax({
+        type: "POST",
+        url: "/Home/GetImage",
+        success: function (data) {
+            image.src = data;
+
+            image.onload = function () {
+                applyFilter();
+            };
+        }
+    });
 }
 
 function applyFilter() {
@@ -140,4 +292,4 @@ function applyFilter() {
     }
 
     canvasCtx.setTransform(1, 0, 0, 1, 0, 0);
-};
+}
