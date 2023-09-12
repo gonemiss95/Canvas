@@ -2,6 +2,9 @@
 let canvasCtx = canvas.getContext("2d");
 let image = null;
 
+let canvasWidth = 0;
+let canvasHeight = 0;
+
 let rotateDegree = 0;
 let scale = 1;
 
@@ -43,15 +46,13 @@ function resetFilter() {
         url: "/Home/GetImage",
         success: function (data) {
             fabric.Image.fromURL(data, function (img) {
-                //img.set({
-                //    selectable: false, // Make the image not selectable
-                //    left: tempWidth / 2, // Set the initial left position
-                //    top: tempHeight / 2, // Set the initial top position
-                //    width: tempWidth,
-                //    height: tempHeight,
-                //    originX: "center", // Set the origin to the center
-                //    originY: "center", // Set the origin to the center
-                //});
+                img.set({
+                    //selectable: false, //Make the image not selectable
+                    left: img.width / 2, //Set the initial left position
+                    top: img.height / 2, //Set the initial top position
+                    originX: "center", //Set the origin X to the center
+                    originY: "center", //Set the origin Y to the center
+                });
 
                 canvas.clear();
                 canvas.add(img);
@@ -60,6 +61,8 @@ function resetFilter() {
                 canvas.renderAll();
 
                 image = img;
+                canvasWidth = img.width;
+                canvasHeight = img.height;
             });
         }
     });
@@ -122,24 +125,34 @@ function filterCheckChanged() {
     canvas.renderAll();
 }
 
-function rotateLeft() {
-    rotateDegree += 90;
+function rotate(rotateAngle) {
+    if (rotateAngle === "Left") {
+        rotateDegree += 90;
+    }
+    else if (rotateAngle === "Right") {
+        rotateDegree -= 90;
+    }
 
-    if (rotateDegree >= 360) {
+    if (rotateDegree >= 360 || rotateDegree <= -360) {
         rotateDegree = 0;
     }
 
-    applyFilter();
-}
-
-function rotateRight() {
-    rotateDegree -= 90;
-
-    if (rotateDegree <= -360) {
-        rotateDegree = 0;
+    if (rotateDegree === 90 || rotateDegree === -90 || rotateDegree === 270 || rotateDegree === -270) {
+        canvasWidth = image.height;
+        canvasHeight = image.width;
+    }
+    else {
+        canvasWidth = image.width;
+        canvasHeight = image.height;
     }
 
-    applyFilter();
+    image.rotate(rotateDegree);
+    image.left = canvasWidth / 2;
+    image.top = canvasHeight / 2;
+
+    canvas.setWidth(canvasWidth * canvas.getZoom());
+    canvas.setHeight(canvasHeight * canvas.getZoom());
+    canvas.renderAll();
 }
 
 function zoom(zoomKey) {
@@ -150,8 +163,8 @@ function zoom(zoomKey) {
         canvas.setZoom(canvas.getZoom() - 0.1);
     }
 
-    canvas.setWidth(canvas.getZoom() * image.width);
-    canvas.setHeight(canvas.getZoom() * image.height);
+    canvas.setWidth(canvasWidth * canvas.getZoom());
+    canvas.setHeight(canvasHeight * canvas.getZoom());
     canvas.renderAll();
 }
 
