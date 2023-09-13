@@ -37,9 +37,10 @@ function resetFilter() {
         type: "POST",
         url: "/Home/GetImage",
         success: function (data) {
+            fabric.Object.prototype.selectable = false; //Make the all objects in canvas selectable
+
             fabric.Image.fromURL(data, function (img) {
                 img.set({
-                    selectable: false, //Make the image not selectable
                     left: img.width / 2, //Set the initial left position
                     top: img.height / 2, //Set the initial top position
                     originX: "center", //Set the origin X to the center
@@ -214,6 +215,7 @@ function text() {
     isEraserClick = false;
 
     let textBox = new fabric.Textbox("Enter Text", {
+        selectable: true,
         fontSize: 16,
         fontFamily: "Arial",
         textAlign: "left",
@@ -275,7 +277,6 @@ canvas.on("mouse:up", (e) => {
 
         cropImg.onload = function () {
             image = new fabric.Image(cropImg);
-            image.selectable = false;
             image.left = canvasWidth / 2;
             image.top = canvasHeight / 2;
             image.originX = "center";
@@ -290,3 +291,13 @@ canvas.on("mouse:up", (e) => {
         };
     }
 });
+
+document.onkeydown = function (e) {
+    if (e.key === "Delete") {
+        canvas.getActiveObjects().forEach((obj) => {
+            canvas.remove(obj);
+        });
+
+        canvas.discardActiveObject();
+    }
+}
