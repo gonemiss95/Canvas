@@ -32,7 +32,7 @@ namespace Canvas.Controllers
             Image img = Image.FromFile("D:\\Work Document\\a.jpg");
             ImageConverter imgConverter = new ImageConverter();
             byte[] imgBytes = imgConverter.ConvertTo(img, typeof(byte[])) as byte[];
-            string imgStr = $"data:image/gif;base64,{Convert.ToBase64String(imgBytes)}";
+            string imgStr = $"data:image/jpg;base64,{Convert.ToBase64String(imgBytes)}";
             return Json(imgStr, JsonRequestBehavior.AllowGet);
         }
 
@@ -56,11 +56,10 @@ namespace Canvas.Controllers
 
                 try
                 {
-                    byte[] imgBytes = Convert.FromBase64String(imgStr.Replace(' ', '+'));
-
-                    using (var fs = new FileStream("D:\\Work Document\\result.jpg", FileMode.Create, FileAccess.Write))
+                    using (FileStream stream = new FileStream("D:\\Work Document\\result.jpg", FileMode.Create, FileAccess.Write))
                     {
-                        fs.Write(imgBytes, 0, imgBytes.Length);
+                        byte[] imgBytes = Convert.FromBase64String(imgStr.Replace(' ', '+'));
+                        stream.Write(imgBytes, 0, imgBytes.Length);
                     }
                 }
                 catch (Exception)

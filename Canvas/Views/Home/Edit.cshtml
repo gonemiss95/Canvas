@@ -1,62 +1,57 @@
-﻿<div class="divEditor">
-    <div class="divImage">
-        <canvas id="canvas"></canvas>
-    </div>
-    <div class="divTool">
-        <div class="divTabTitle">
-            <label id="lblFilter" onclick="tabClicked('Filter')">Filter</label>
-            <label id="lblEditor" onclick="tabClicked('Editor')">Editor</label>
-        </div>
+﻿<div class="divImage">
+    <canvas id="canvas" style="border: dotted;"></canvas>
+</div>
 
-        <div class="divTabDetail" id="tabDtlFilter">
-            <label class="lblTabDetailTitle">Filters</label>
-
-            <div class="divFilterInfoSlider">
-                <label for="sliderBrightness">Brighteness</label>
-                <label id="lblBrightnessValue" for="sliderBrightness">100%</label>
-            </div>
-            <input type="range" id="sliderBrightness" value="100" min="0" max="200" oninput="filterValueChanged('Brightness')">
-
-            <div class="divFilterInfoSlider">
-                <label for="sliderSaturation">Saturation</label>
-                <label id="lblSaturationValue" for="sliderSaturation">100%</label>
-            </div>
-            <input type="range" id="sliderSaturation" value="100" min="0" max="200" oninput="filterValueChanged('Saturation')">
-
-            <div class="divFilterInfoSlider">
-                <label for="sliderContrast">Contrast</label>
-                <label id="lblContrastValue" for="sliderContrast">100%</label>
-            </div>
-            <input type="range" id="sliderContrast" value="100" min="0" max="200" oninput="filterValueChanged('Contrast')">
-
-            <div class="divFilterInfoCheckBox">
-                <input type="checkbox" id="chkBoxGrayscale" onchange="filterCheckChanged()">
-                <label for="chkBoxGrayscale">Grayscale</label>
-            </div>
-
-            <div class="divFilterInfoCheckBox">
-                <input type="checkbox" id="chkBoxInversion" onchange="filterCheckChanged()">
-                <label for="chkBoxInversion">Inversion</label>
-            </div>
-
+<div class="divTool">
+    <div class="divEditor">
+        <div>
             <button type="button" onclick="rotate('Left')"><img title="rotate-left" src="~/Content/CSS/rotate-left.png" />Rotate Left</button>
             <button type="button" onclick="rotate('Right')"><img title="rotate-right" src="~/Content/CSS/rotate-right.png" />Rotate Right</button>
             <button type="button" onclick="zoom('In')"><img title="zoom-in" src="~/Content/CSS/zoom-in.png" />Zoom In</button>
             <button type="button" onclick="zoom('Out')"><img title="zoom-out" src="~/Content/CSS/zoom-out.png" />Zoom Out</button>
-        </div>
-
-        <div class="divTabDetail" id="tabDtlEditor">
-            <label class="lblTabDetailTitle">Editors</label>
-
             <button type="button" onclick="crop()"><img title="crop" src="~/Content/CSS/crop.png" />Crop</button>
 
             <button type="button" onclick="eraser()"><img title="eraser" src="~/Content/CSS/eraser.png" />Eraser</button>
-            <input type="number" id="eraserSize" min="1" max="50" value="10" oninput="eraserSizeChanged(this)">
+            <input type="number" id="eraserSize" title="eraserSize" min="1" max="50" value="10" oninput="eraserSizeChanged(this)">
 
             <button type="button" onclick="text()"><img title="text" src="~/Content/CSS/text.png" />Text</button>
             <input type="color" id="textColor" title="textColor" value="#e66465">
         </div>
 
+        <div class="divFilter">
+            <div class="divSlider">
+                <label for="sliderBrightness">Brighteness</label>
+                <input type="range" id="sliderBrightness" value="100" min="0" max="200" oninput="filterValueChanged('Brightness')">
+                <label id="lblBrightnessValue" for="sliderBrightness">100%</label>
+            </div>
+
+            <div class="divSlider">
+                <label for="sliderSaturation">Saturation</label>
+                <input type="range" id="sliderSaturation" value="100" min="0" max="200" oninput="filterValueChanged('Saturation')">
+                <label id="lblSaturationValue" for="sliderSaturation">100%</label>
+            </div>
+
+            <div class="divSlider">
+                <label for="sliderContrast">Contrast</label>
+                <input type="range" id="sliderContrast" value="100" min="0" max="200" oninput="filterValueChanged('Contrast')">
+                <label id="lblContrastValue" for="sliderContrast">100%</label>
+            </div>
+
+            <div class="divCheckBox">
+                <div>
+                    <input type="checkbox" id="chkBoxGrayscale" onchange="filterCheckChanged()">
+                    <label for="chkBoxGrayscale">Grayscale</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="chkBoxInversion" onchange="filterCheckChanged()">
+                    <label for="chkBoxInversion">Inversion</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divSubmit">
         <button type="button" onclick="resetFilter()">RESET FILTERS</button>
         <button type="button" onclick="saveImage()">SAVE</button>
     </div>

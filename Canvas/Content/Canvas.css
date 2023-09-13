@@ -1,91 +1,85 @@
-﻿.divEditor {
-    display: flex;
-}
-
-.divImage {
-    width: 60%;
+﻿.divImage {
     height: 500px;
     border: 1px solid black;
     border-radius: 5px;
-    margin-right: 20px;
     overflow: auto;
+    display: flex;
+    justify-content: center;
 }
 
 .divTool {
-    width: 25%;
-}
-
-.divTool button {
-    padding: 11px;
-    font-size: 14px;
-    border-radius: 3px;
-    background: none;
-}
-
-.divTool button:hover {
-    background: #f5f5f5;
-}
-
-.divTool button:active {
-    color: #fff;
-    background: #5372f0;
-}
-
-.divTool button img {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-}
-
-.divTabTitle {
     display: flex;
-    justify-content: space-around;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 5px;
 }
 
-.divTabDetail {
+    .divTool button {
+        padding: 5px;
+        font-size: 14px;
+        border-radius: 3px;
+        background: none;
+    }
+
+        .divTool button:hover {
+            background: #f5f5f5;
+        }
+
+        .divTool button:active {
+            color: #fff;
+            background: #5372f0;
+        }
+
+        .divTool button img {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+
+.divEditor {
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 15px;
+    width: 60%;
+    padding: 10px;
+    margin-top: 10px;
 }
 
-.lblTabDetailTitle {
-    font-size: 16px;
-    font-weight: bold;
-    padding-bottom: 15px;
-}
+    .divEditor input[type=color] {
+        position: absolute;
+        padding: 5px;
+        margin-top: 3px;
+        margin-left: 5px;
+    }
 
-.divFilterInfoSlider {
+.divFilter {
     display: flex;
-    justify-content: space-between;
+    padding-top: 10px;
+    font-size: 14px;
 }
 
-.divFilterInfoCheckBox {
-    display: flex;
-    width: 10%;
+.divSlider {
+    width: 25%;
+    margin-right: 10px;
 }
 
-.divFilterInfoCheckBox input {
-    margin: 5px;
-}
+    .divSlider input {
+        width: 100%;
+        accent-color: #5372f0;
+    }
 
-#tabDtlFilter input {
-    width: 100%;
+.divCheckBox input {
+    width: 25px;
+    height: 25px;
     accent-color: #5372f0;
 }
 
-#tabDtlFilter button {
-    width: calc(100% / 2 - 15px);
-    margin: 5px;
+.divCheckBox label {
+    position: absolute;
+    padding-left: 5px;
 }
 
-#tabDtlEditor {
-    width: 100%;
+.divSubmit {
+    display: grid;
+    padding: 10px;
 }
 
-#tabDtlEditor button {
-    width: 50%;
-    margin: 5px;
-}
+    .divSubmit button {
+        height: 60%
+    }
