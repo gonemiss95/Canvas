@@ -61,23 +61,6 @@ function resetFilter() {
     });
 }
 
-function tabClicked(tabKey) {
-    if (tabKey === "Filter") {
-        $("#tabDtlFilter").css("display", "block");
-        $("#tabDtlEditor").css("display", "none");
-
-        $("#lblFilter").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
-        $("#lblEditor").css({ "font-size": "16px", "text-decoration": "none" });
-    }
-    else if (tabKey === "Editor") {
-        $("#tabDtlFilter").css("display", "none");
-        $("#tabDtlEditor").css("display", "inline-grid");
-
-        $("#lblFilter").css({ "font-size": "16px", "text-decoration": "none" });
-        $("#lblEditor").css({ "font-size": "18px", "text-decoration": "underline", "text-underline-offset": "8px" });
-    }
-}
-
 function saveImage() {
     let imgDataURL = canvas.toDataURL({
         format: "jpeg",
@@ -130,33 +113,45 @@ function filterCheckChanged() {
 }
 
 function rotate(rotateAngle) {
+    let canvasImg = new Image();
+    canvasImg.src = canvas.toDataURL();
+
     if (rotateAngle === "Left") {
-        rotateDegree += 90;
+        rotateDegree = 90;
     }
     else if (rotateAngle === "Right") {
-        rotateDegree -= 90;
+        rotateDegree = -90;
     }
 
-    if (rotateDegree >= 360 || rotateDegree <= -360) {
-        rotateDegree = 0;
-    }
+    canvasWidth = canvas.height;
+    canvasHeight = canvas.width;
 
-    if (rotateDegree === 90 || rotateDegree === -90 || rotateDegree === 270 || rotateDegree === -270) {
-        canvasWidth = image.height;
-        canvasHeight = image.width;
-    }
-    else {
-        canvasWidth = image.width;
-        canvasHeight = image.height;
-    }
+    canvasImg.onload = function () {
+        image = new fabric.Image(canvasImg);
+        image.left = canvasWidth / 2;
+        image.top = canvasHeight / 2;
+        image.originX = "center";
+        image.originY = "center";
+        image.rotate(rotateDegree);
 
-    image.rotate(rotateDegree);
-    image.left = canvasWidth / 2;
-    image.top = canvasHeight / 2;
+        canvas.clear();
+        canvas.add(image);
+        canvas.setWidth(canvasWidth);
+        canvas.setHeight(canvasHeight);
+        canvas.setZoom(1);
+        canvas.renderAll();
 
-    canvas.setWidth(canvasWidth * canvas.getZoom());
-    canvas.setHeight(canvasHeight * canvas.getZoom());
-    canvas.renderAll();
+        $("#sliderBrightness").val(parseInt($("#lblBrightnessValue").text().slice(0, -1)));
+        filterValueChanged("Brightness");
+
+        $("#sliderSaturation").val(parseInt($("#lblSaturationValue").text().slice(0, -1)));
+        filterValueChanged("Saturation");
+
+        $("#sliderContrast").val(parseInt($("#lblContrastValue").text().slice(0, -1)));
+        filterValueChanged("Contrast");
+
+        filterCheckChanged();
+    };
 }
 
 function zoom(zoomKey) {
