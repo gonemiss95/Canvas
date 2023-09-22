@@ -74,8 +74,6 @@ function saveImage() {
     });
 }
 
-
-//Filter functions
 function filterValueChanged(filterKey) {
     const filter = window[`slider${filterKey}`];
     const filterValue = (filter.value / 100) - 1;
@@ -115,6 +113,13 @@ function filterCheckChanged() {
 function rotate(rotateAngle) {
     let zoomScale = canvas.getZoom();
 
+    image.filters[0] = null;
+    image.filters[1] = null;
+    image.filters[2] = null;
+    image.filters[3] = null;
+    image.filters[4] = null;
+    image.applyFilters();
+
     canvas.setZoom(1);
     canvas.setWidth(canvasWidth);
     canvas.setHeight(canvasHeight);
@@ -147,15 +152,9 @@ function rotate(rotateAngle) {
         canvas.setZoom(zoomScale);
         canvas.renderAll();
 
-        $("#sliderBrightness").val(parseInt($("#lblBrightnessValue").text().slice(0, -1)));
         filterValueChanged("Brightness");
-
-        $("#sliderSaturation").val(parseInt($("#lblSaturationValue").text().slice(0, -1)));
         filterValueChanged("Saturation");
-
-        $("#sliderContrast").val(parseInt($("#lblContrastValue").text().slice(0, -1)));
         filterValueChanged("Contrast");
-
         filterCheckChanged();
     };
 }
