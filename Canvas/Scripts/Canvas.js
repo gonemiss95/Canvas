@@ -248,15 +248,12 @@ canvas.on("mouse:up", (e) => {
         }
 
         $("#sliderBrightness").val(100);
-        $("#lblBrightnessValue").text("100%");
         filterValueChanged("Brightness");
 
         $("#sliderSaturation").val(100);
-        $("#lblSaturationValue").text("100%");
         filterValueChanged("Saturation");
 
         $("#sliderContrast").val(100);
-        $("#lblContrastValue").text("100%");
         filterValueChanged("Contrast");
 
         $("#chkBoxGrayscale").prop("checked", false);
