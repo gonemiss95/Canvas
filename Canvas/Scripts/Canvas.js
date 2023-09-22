@@ -14,7 +14,6 @@ let startY = 0;
 
 $(document).ready(function () {
     resetFilter();
-    $("#lblFilter").click();
 });
 
 function resetFilter() {
