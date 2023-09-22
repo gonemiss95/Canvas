@@ -113,6 +113,12 @@ function filterCheckChanged() {
 }
 
 function rotate(rotateAngle) {
+    let zoomScale = canvas.getZoom();
+
+    canvas.setZoom(1);
+    canvas.setWidth(canvasWidth);
+    canvas.setHeight(canvasHeight);
+
     let canvasImg = new Image();
     canvasImg.src = canvas.toDataURL();
 
@@ -136,9 +142,9 @@ function rotate(rotateAngle) {
 
         canvas.clear();
         canvas.add(image);
-        canvas.setWidth(canvasWidth);
-        canvas.setHeight(canvasHeight);
-        canvas.setZoom(1);
+        canvas.setWidth(canvasWidth * zoomScale);
+        canvas.setHeight(canvasHeight * zoomScale);
+        canvas.setZoom(zoomScale);
         canvas.renderAll();
 
         $("#sliderBrightness").val(parseInt($("#lblBrightnessValue").text().slice(0, -1)));
@@ -167,8 +173,6 @@ function zoom(zoomKey) {
     canvas.renderAll();
 }
 
-
-//Editor functions
 function crop() {
     isCropClick = true;
     isEraserClick = false;
